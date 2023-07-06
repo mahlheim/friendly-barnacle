@@ -1,24 +1,36 @@
-// import Express.js
+// imports express.js
 const express = require('express');
 
-// import built-in Node.js package 'path' to resolve path of files that are located on the server
+// imports built-in node.js package 'path' to resolve path of files that are located on the server
 const path = require('path');
 
-// initialize an instance of Express.js
+// initializes an instance of express.js
 const app = express();
 
-// specify on which port the Express.js server will run
+// specifies which port the express.js server will run on
 const PORT = 3001;
+
+// imports htmlroutes file
+const htmlRoutes = require('./routes/htmlRoutes');
+
+// imports apiroutes file
+const apiRoutes = require('./routes/apiRoutes');
 
 // static middleware pointing to the public folder
 app.use(express.static('public'));
+
+// middleware to parse the json data
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+app.use('/api', apiRoutes);
+app.use('/', htmlRoutes);
 
 // routes
 app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '/public/index.html'))
 );
+
+
 
 app.get('/text', (req, res) => res.send('I have now created a GET route!'));
 
@@ -57,7 +69,7 @@ app.put('/change', (req, res) => res.send('I have now created a PUT route!'));
 
 app.delete('/remove', (req, res) => res.send('I have now created a DELETE route!'));
 
-// start server
+// starts server
 app.listen(PORT, () =>
   console.log(`Example app listening at http://localhost:${PORT}`)
 );
