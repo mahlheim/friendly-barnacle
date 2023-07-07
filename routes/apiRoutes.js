@@ -1,41 +1,49 @@
 // imports file system module
 const fs = require('fs');
-const data = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
+const util = require('util');
+const app = require('express').Router();
+const writeFileAsync = util.promisify(fs.writeFile);
+const readFileAsync = util.promisify(fs.readFile);
+let notesData;
 
-module.exports = function(app) {
-    app.get('/api/notes', function(req, res) {
-        res.JSON(data);
+// get request
+app.get('/notes', (req, res) => {
+    readFileAsync('db/db.json', 'utf8').then(function(data) {
+        notesData = JSON.parse(data);
+        res.json(notesData);
     });
+});
 
-    app.get('/api/notes/:id', function(req, res) {
-        res.JSON(data[Number(req.params.id)]);
-    });
-
-    app.post('/api/notes', function(req, res) {
+// post request
+app.post('/notes', (req, res) => {
+    readFileAsync('db/db.json', 'utf8').then(function(data) {
+        notesData = JSON.parse(data);
         let newNote = req.body;
-        let newID = (data.length).toString();
-        console.log(newID);
-        newNote.id = newID;
-        data.push(newNote);
-        fs.writeFileSync('./db/db.json', JSON.stringify(data), function(err) {
-            if (err) {
-                throw (err);
-            }
+        let currentID = notesData.length;
+        newNote.id = currentID + 1;
+        notesData.push(newNote);
+        notesData = JSON.stringify(notesData);
+        writeFileAsync('db/db.json', notesData).then(function(data) {
+            console.log('Your note has been successfully added!');
         });
-        res.JSON(data);
+        res.json(notesData);
     });
+});
 
-    app.delete('/api/notes/:id', function(req, res) {
-        let noteID = req.params.id;
-        let newNewID = 0;
-        data = data.filter(currentNote => {
-            return currentNote.id != noteID;
-        });
-        for (currentNote of data) {
-            currentNote.id = newNewID.toString();
-            newNewID++;
+// delete request
+app.delete('/notes/:id', (req, res) => {
+    let deleteID = parseInt(req.params.id);
+    for (let i = 0; i < notesData.length; i++) {
+        if (deleteID === notesData[i].id) {
+            notesData.splice(i, 1);
+            let noteJSON = JSON.stringify(notesData, null, 2);
+
+            writeFileAsync('db/db.json', noteJSON).then(function () {
+                console.log('Your note has been successfully deleted!');
+            });
         }
-        fs.writeFileSync('./db/db.json', JSON.stringify(data));
-        res.JSON(data);
-    });
-}
+    }
+    res.json(notesData);
+})
+
+module.exports = app;
