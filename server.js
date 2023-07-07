@@ -13,8 +13,8 @@ require('./routes/htmlRoutes.js')(app);
 // imports function from apiroutes file
 require('./routes/apiRoutes.js')(app); 
 
-// static middleware pointing to the public folder
-app.use('/public/assets', express.static(__dirname + '/public/assets'));
+// static middleware pointing to the assets folder inside the public folder
+app.use('./public/assets', express.static(__dirname + './public/assets'));
 
 // middleware to parse the json data
 app.use(express.json());
