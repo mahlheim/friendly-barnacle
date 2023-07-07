@@ -14,7 +14,7 @@ require('./routes/htmlRoutes.js')(app);
 require('./routes/apiRoutes.js')(app); 
 
 // static middleware pointing to the assets folder inside the public folder
-app.use('./public/assets', express.static(__dirname + './public/assets'));
+app.use('./public', express.static(__dirname + './public'));
 
 // middleware to parse the json data
 app.use(express.json());
