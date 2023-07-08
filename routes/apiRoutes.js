@@ -7,7 +7,7 @@ const readFileAsync = util.promisify(fs.readFile);
 let notesData;
 
 // get request
-app.get('/notes', (req, res) => {
+app.get('/api/notes', (req, res) => {
     readFileAsync('db/db.json', 'utf8').then(function(data) {
         notesData = JSON.parse(data);
         res.json(notesData);
@@ -15,7 +15,7 @@ app.get('/notes', (req, res) => {
 });
 
 // post request
-app.post('/notes', (req, res) => {
+app.post('/api/notes', (req, res) => {
     readFileAsync('db/db.json', 'utf8').then(function(data) {
         notesData = JSON.parse(data);
         let newNote = req.body;
@@ -31,7 +31,7 @@ app.post('/notes', (req, res) => {
 });
 
 // delete request
-app.delete('/notes/:id', (req, res) => {
+app.delete('/api/notes/:id', (req, res) => {
     let deleteID = parseInt(req.params.id);
     for (let i = 0; i < notesData.length; i++) {
         if (deleteID === notesData[i].id) {
