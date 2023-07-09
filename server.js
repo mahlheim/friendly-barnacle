@@ -6,14 +6,14 @@ const fs = require('fs');
 var app = express();
 var PORT = process.env.PORT || 3001
 
-// allows express app to handle data parsing
+// allows express app to handle data parsing and allow access to content in public folder
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use('/public', express.static(__dirname + '/public'));
+app.use(express.static('public'));
 
 // imports routes from files in the routes folder
-require('./routes/htmlRoutes')(app);
-require('./routes/apiRoutes')(app);
+require('./routes/htmlRoutes.js')(app);
+require('./routes/apiRoutes.js')(app);
 
 // starts server
 app.listen(PORT, () =>
