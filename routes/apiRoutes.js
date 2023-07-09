@@ -1,4 +1,4 @@
-// imports file system module, creates data variable
+// imports file system module, creates data variable that parses the notes saved in db.json
 const fs = require('fs');
 let data = JSON.parse(fs.readFileSync('./db/db.json', 'utf8'));
 
@@ -17,9 +17,8 @@ app.get('/api/notes/:id', function(req, res) {
 // post request
 app.post('/api/notes', function(req, res) {
     let newNote = req.body;
-    let uniqueId = (data.length).toString();
-    console.log(uniqueId);
-    newNote.id = uniqueId;
+    let newId = (data.length).toString();
+    newNote.id = newId;
     data.push(newNote);
     fs.writeFileSync('./db/db.json', JSON.stringify(data), function(err) {
         if (err) throw (err);        
@@ -27,19 +26,19 @@ app.post('/api/notes', function(req, res) {
     res.json(data);    
 });
 
-// delete request
+// BONUS delete request
 app.delete('/api/notes/:id', function(req, res) {
     let noteId = req.params.id;
-    let newId = 0;
+    let updatedId = 0;
     console.log(`Your note, ID: ${noteId}, has been succesfully deleted!`);
     data = data.filter(currentNote => {
         return currentNote.id != noteId;
     });
     for (currentNote of data) {
-        currentNote.id = newId.toString();
-        newId++;
+        currentNote.id = updatedId.toString();
+        updatedId++;
     }
     fs.writeFileSync('./db/db.json', JSON.stringify(data));
     res.json(data);
 }); 
-};
+}
