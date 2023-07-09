@@ -24,6 +24,7 @@ Navigate to the homepage and click the "Get Started" button. This will take you 
 
 ## Credits
 Below are the references I used while building this application:
+<br>
 https://www.geeksforgeeks.org/express-js-express-router-function/
 
 https://github.com/deannapi/note-taker/blob/master/routes/htmlRoutes.js
