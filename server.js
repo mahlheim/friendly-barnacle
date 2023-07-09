@@ -1,30 +1,21 @@
-// imports express.js
+// imports express and fs
 const express = require('express');
+const fs = require('fs');
 
-// initializes an instance of express.js
-const app = express();
+//  initializes an instance of express.js and specifies port 
+var app = express();
+var PORT = process.env.PORT || 3001
 
-// imports modules from apiRoutes and htmlRoutes files
-const apiRoutes = require('./routes/apiRoutes');
-const htmlRoutes = require('./routes/htmlRoutes');
-
-// specifies which port the express.js server will run on
-const PORT = process.env.PORT || 3001;
-
-// static middleware to pull in css and js
-app.use(express.static('public'));
-
-// imports function from htmlroutes and apiroutes file
-app.use('/api', apiRoutes); 
-app.use('/', htmlRoutes); 
-
-// middleware to parse the json data
+// allows express app to handle data parsing
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use('/public', express.static(__dirname + '/public'));
+
+// imports routes from files in the routes folder
+require('./routes/htmlRoutes')(app);
+require('./routes/apiRoutes')(app);
 
 // starts server
 app.listen(PORT, () =>
-  console.log(`Example app listening at http://localhost:${PORT}`)
-);
-
-module.exports = app;
+   console.log(`Example app listening at http://localhost:${PORT}`)
+); 
